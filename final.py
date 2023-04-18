@@ -13,6 +13,8 @@
 8. stat3
 9. visual4
 10. stat4
+11. baseline
+12. models
 '''
 
 # =======================================================================================================
@@ -214,3 +216,119 @@ def stat4():
     print('\033[35mFeatures:\033[0m Volatile Acidity vs. Quality')
     print(f'\033[35mCorrelation:\033[0m {r:.4f}')
     print(f'\033[35mP-Value:\033[0m {p:.4f}')
+
+# =======================================================================================================
+# stat4 END
+# stat4 TO baseline
+# baseline START
+# =======================================================================================================
+
+def baseline():
+    '''
+    Returns the baseline accuracy score for the final_report.ipynb
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    baseline accuracy score of the wine quality
+    '''
+    wines = pd.read_csv('wines.csv', index_col=0)
+    baseline = round((wines.quality == wines.quality.mode()[0]).sum() / wines.shape[0], 3)
+    return baseline
+
+# =======================================================================================================
+# baseline END
+# baseline TO models
+# models START
+# =======================================================================================================
+
+def models():
+    '''
+    Returns a pandas dataframe with the baseline and 4 of the best models within the group
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    A pandas dataframe with model scores
+    '''
+    models_dict = {
+    'type' : [
+        'baseline',
+        'Random Forest Classifier1',
+        'Random Forest Classifier2',
+        'Random Forest Classifier3',
+        'Random Forest Classifier4'
+    ],
+    'hyperparameters' : [
+        'None',
+        'depth=3, ccpalpha=0.0015',
+        'depth=5',
+        'depth=5, ccpalpha=0.0007',
+        'n_estimators=100'
+    ],
+    'clusters' : [
+        'None',
+        'None',
+        'Yes',
+        'Yes',
+        'None'
+    ],
+    'train_accuracy' : [
+        0.44,
+        0.55,
+        0.52,
+        0.56,
+        1.00
+    ],
+    'validate_accuracy' : [
+        0.44,
+        0.54,
+        0.40,
+        0.54,
+        0.88
+    ],
+    'diff_accuracy' : [
+        0.000,
+        -0.01,
+        -0.12,
+        -0.02,
+        -0.12
+    ]
+    }
+    models = pd.DataFrame(models_dict)
+    return models
+
+# =======================================================================================================
+# models END
+# models TO best_model
+# best_model START
+# =======================================================================================================
+
+def best_model():
+    '''
+    Returns a pandas dataframe with the baseline and the best model within the group
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    A pandas dataframe with the best model score
+    '''
+    models_dict = {
+    'type' : [
+        'baseline',
+        'Random Forest Classifier4'
+    ],
+    'test_accuracy' : [
+        0.44,
+        0.89,
+    ]
+    }
+    models = pd.DataFrame(models_dict)
+    return models
+
+# =======================================================================================================
+# best_model END
+# =======================================================================================================
