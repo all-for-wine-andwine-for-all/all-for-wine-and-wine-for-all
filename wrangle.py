@@ -27,7 +27,6 @@ from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.metrics import mean_squared_error
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from xgboost import XGBRegressor
 import seaborn as sns
 import scipy.stats as stats
 from sklearn.linear_model import LinearRegression, Lasso, Ridge, ElasticNet
@@ -161,29 +160,7 @@ def get_stats(df, target_col):
     print(OLS.summary())
     return OLS
 
-def model_selection(df, target_col):
-    import pandas as pd
-    import numpy as np
-    from sklearn.model_selection import train_test_split, cross_val_score
-    from sklearn.metrics import mean_squared_error
-    from sklearn.linear_model import LinearRegression, Lasso, Ridge, ElasticNet
-    from sklearn.tree import DecisionTreeRegressor
-    from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-    from xgboost import XGBRegressor
 
-    X = df.drop(target_col, axis=1)
-    y = df[target_col]
-
-    models = [
-        ('Linear Regression', LinearRegression()),
-        ('Lasso', Lasso()),
-        ('Ridge', Ridge()),
-        ('ElasticNet', ElasticNet()),
-        ('Decision Tree', DecisionTreeRegressor()),
-        ('Random Forest', RandomForestRegressor()),
-        ('Gradient Boosting', GradientBoostingRegressor()),
-        ('XGBoost', XGBRegressor())
-    ]
 
     for name, model in models:
         mse = -np.mean(cross_val_score(model, X, y, scoring='neg_mean_squared_error', cv=5))
