@@ -15,6 +15,10 @@
 10. stat4
 11. baseline
 12. models
+13. best_model
+14. acquire
+15. prepare
+16. visual5
 '''
 
 # =======================================================================================================
@@ -39,6 +43,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.cluster import KMeans
 
 # =======================================================================================================
 # Imports END
@@ -331,4 +337,140 @@ def best_model():
 
 # =======================================================================================================
 # best_model END
+# best_model TO acquire
+# acquire START
+# =======================================================================================================
+
+def acquire():
+    '''
+    Obtains the vanilla version of both the red and white wine dataframe
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    red = pandas dataframe with red wine data
+    white = pandas dataframe with white wine data
+    '''
+    red = pd.read_csv('https://query.data.world/s/k6viyg23e4usmgc2joiodhf2pvcvao?dws=00000')
+    white = pd.read_csv('https://query.data.world/s/d5jg7efmkn3kq7cmrvvfkx2ww7epq7?dws=00000')
+    return red, white
+
+# =======================================================================================================
+# acquire END
+# acquire TO prepare
+# prepare START
+# =======================================================================================================
+
+def prepare():
+    '''
+    Takes in the vanilla red and white wine dataframes and returns a cleaned version that is ready 
+    for exploration and further analysis
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    wines = pandas dataframe with both red and white wine prepped for exploration
+    '''
+    red, white = acquire()
+    white['wine_color'] = 'white'
+    red['wine_color'] = 'red'
+    wines = pd.concat([red, white], axis=0)
+    return wines
+
+# =======================================================================================================
+# prepare END
+# prepare TO visual5
+# visual5 START
+# =======================================================================================================
+
+def visual5():
+    '''
+    Returns the 5th specific visual for the final_report.ipynb
+
+    INPUT:
+    NONE
+
+    OUTPUT:
+    scatterplot of the wine's perceived balance vs. wine's quality
+    '''
+    wines = pd.read_csv('wines.csv', index_col=0)
+    original_wines = wines.copy()
+    scale_cols = wines.drop(columns=['quality', 'wine_color']).columns.to_list()
+    scaler = MinMaxScaler()
+    scaler.fit(original_wines[scale_cols])
+    original_wines[scale_cols] = scaler.transform(original_wines[scale_cols])
+    new_wines = original_wines
+    tartness_for_cluster_wines = new_wines[['fixed acidity',
+                                            'volatile acidity',
+                                            'citric acid',
+                                            'pH']]
+    structure_for_cluster_wines = new_wines[['total sulfur dioxide',
+                                            'pH',
+                                            'alcohol']]
+    aroma_for_cluster_wines = new_wines[['volatile acidity',
+                                        'citric acid',
+                                        'sulphates',
+                                        'alcohol']]
+    taste_for_cluster_wines = new_wines[['fixed acidity',
+                                        'volatile acidity',
+                                        'residual sugar',
+                                        'chlorides',
+                                        'pH',
+                                        'sulphates',
+                                        'alcohol']]
+    flavor_for_cluster_wines = new_wines[['fixed acidity',
+                                            'volatile acidity',
+                                            'citric acid',
+                                            'residual sugar',
+                                            'chlorides',
+                                            'free sulfur dioxide',
+                                            'total sulfur dioxide',
+                                            'density',
+                                            'pH',
+                                            'sulphates',
+                                            'alcohol']]
+    mouthfeel_for_cluster_wines = new_wines[['density',
+                                            'pH',
+                                            'alcohol']]
+    alcohol_for_cluster_wines = new_wines[['residual sugar',
+                                            'alcohol']]
+    acidity_for_cluster_wines = new_wines[['fixed acidity',
+                                            'volatile acidity',
+                                            'citric acid',
+                                            'pH']]
+    kmeans = KMeans(n_clusters=5)
+    kmeans.fit(tartness_for_cluster_wines)
+    wines['tartness_cluster'] = kmeans.predict(tartness_for_cluster_wines)
+    kmeans.fit(structure_for_cluster_wines)
+    wines['structure_cluster'] = kmeans.predict(structure_for_cluster_wines)
+    kmeans.fit(aroma_for_cluster_wines)
+    wines['aroma_cluster'] = kmeans.predict(aroma_for_cluster_wines)
+    kmeans.fit(taste_for_cluster_wines)
+    wines['taste_cluster'] = kmeans.predict(taste_for_cluster_wines)
+    kmeans.fit(flavor_for_cluster_wines)
+    wines['flavor_cluster'] = kmeans.predict(flavor_for_cluster_wines)
+    kmeans.fit(mouthfeel_for_cluster_wines)
+    wines['mouthfeel_cluster'] = kmeans.predict(mouthfeel_for_cluster_wines)
+    kmeans.fit(alcohol_for_cluster_wines)
+    wines['alcohol_cluster'] = kmeans.predict(alcohol_for_cluster_wines)
+    kmeans.fit(acidity_for_cluster_wines)
+    wines['acidity_cluster'] = kmeans.predict(acidity_for_cluster_wines)
+    wines['agg_score'] = (wines.tartness_cluster +
+                      wines.structure_cluster +
+                      wines.aroma_cluster +
+                      wines.taste_cluster +
+                      wines.flavor_cluster +
+                      wines.mouthfeel_cluster +
+                      wines.alcohol_cluster +
+                      wines.acidity_cluster) / 8
+    sns.scatterplot(data=wines, x='agg_score', y='quality')
+    plt.xlabel('Estimated Wine Balance')
+    plt.ylabel('Wine Quality Rating')
+    plt.title('Wine Balance vs. Wine Quality')
+    plt.show()
+
+# =======================================================================================================
+# visual5 END
 # =======================================================================================================
