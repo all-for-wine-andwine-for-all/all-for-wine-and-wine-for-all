@@ -189,13 +189,13 @@ Questions:
 <br><br>
 <h4><b>Summary:</b></h4>
 
-- Stuff
+- Through exploration and clustering, no one feature directly impacts the wine quality.  Rather, it's the wine's balance of all the features combined that better dictates the quality.
 <br><br>
 <h4><b>Recommendations:</b></h4>
 
-- Stuff
+- Better understand how to literally define the 'balance' of a wine's content in order to better predict a wine's quality.
 <br><br>
 <h4><b>Next Steps:</b></h4>
 
-- Stuff
+- Conduct further exploration, feature engineering, and clustering methods in order to better define 'balance' for the machine to understand so that the machine will have a more accurate predictor of higher quality wines.
 <br><br>
