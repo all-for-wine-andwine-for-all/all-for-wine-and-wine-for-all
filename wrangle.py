@@ -29,7 +29,7 @@ from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.metrics import mean_squared_error
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from xgboost import XGBRegressor
+#from xgboost import XGBRegressor
 import seaborn as sns
 import scipy.stats as stats
 from sklearn.linear_model import LinearRegression, Lasso, Ridge, ElasticNet
