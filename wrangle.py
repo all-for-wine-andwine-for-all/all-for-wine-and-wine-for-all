@@ -7,8 +7,6 @@
 import pandas as pd
 import numpy as np
 import os
-import env
-from env import host, user, password
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, OrdinalEncoder
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
@@ -29,7 +27,7 @@ from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.metrics import mean_squared_error
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-#from xgboost import XGBRegressor
+from xgboost import XGBRegressor
 import seaborn as sns
 import scipy.stats as stats
 from sklearn.linear_model import LinearRegression, Lasso, Ridge, ElasticNet
@@ -84,45 +82,7 @@ def remove_outliers_iqr_loop(df, multiplier=1.5):
     
     return df
 
-def custom_describe(df):
-    desc = df.describe(include='all').T
 
-    # Adding additional columns
-    desc['count_nulls'] = df.isnull().sum()
-    desc['pct_nulls'] = (desc['count_nulls'] / len(df)) * 100
-    desc['num_rows_missing'] = len(df) - desc['count']
-    desc['pct_rows_missing'] = (desc['num_rows_missing'] / len(df)) * 100
-    desc['dtype'] = df.dtypes
-
-    # Add results from sub-functions to the desc DataFrame
-    desc['distribution_type'] = df.apply(distribution_type)
-    desc['skewness'] = df.apply(column_skewness)
-    desc['skew_type'] = df.apply(skew_type)
-    desc['data_type'] = df.apply(data_type)
-    desc['num_outliers'] = df.apply(iqr_outliers)
-    desc['variable_type'] = df.apply(variable_type)
-
-    # Calculate correlations between numeric columns
-    correlations = df.corr().abs().unstack().sort_values(ascending=False).drop_duplicates()
-    correlations = correlations[(correlations != 1) &                     correlations.index.get_level_values(0).equals(correlations.index.get_level_values(1))]
-
-    
-    for col in df.columns:
-        print("\nColumn:", col)
-        
-        if df[col].dtype != 'O':
-            sns.histplot(df[col], kde=True)
-            plt.title(f'Distribution of {col}')
-            plt.show()
-
-    # Reorder columns
-    columns_order = [
-        'num_rows_missing', 'pct_rows_missing','count', 'count_nulls', 'pct_nulls', 'mean',                   'std','min', '25%', '50%', '75%', 'max', 'unique', 'top', 'freq', 'dtype',                             'distribution_type', 'skewness', 'skew_type', 'data_type', 'num_outliers', 'variable_type'
-    ]
-    desc = desc[columns_order]
-
-    # Display the custom describe DataFrame with left-aligned column names
-    display(desc.style.set_properties(**{'text-align': 'left'}))
 
 def wrangle_zillow_data():
     df = get_zillow_data()
@@ -580,9 +540,7 @@ def custom_describe(df):
 
     # Reorder columns
     columns_order = [
-        'num_rows_missing', 'pct_rows_missing',
-        'count', 'count_nulls', 'pct_nulls', 'mean', 'std', 'min', '25%', '50%', '75%', 'max', 'unique', 'top', 'freq', 'dtype',
-        'distribution_type', 'skewness', 'skew_type', 'data_type', 'num_outliers', 'variable_type'
+        'num_rows_missing', 'pct_rows_missing','count', 'count_nulls', 'pct_nulls', 'mean',                   'std','min', '25%', '50%', '75%', 'max', 'unique', 'top', 'freq', 'dtype',                             'distribution_type', 'skewness', 'skew_type', 'data_type', 'num_outliers', 'variable_type'
     ]
     desc = desc[columns_order]
 
